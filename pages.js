@@ -22,8 +22,10 @@
 // }
 
 var request = require('sync-request');
+var fs = require('fs');
 let ans = "";
-for(let i = 1; i <= 6101; i++) {
+let bound = 6101;
+for(let i = 1; i <= bound; i++) {
   try {
     var res = request('GET', 'https://e-mehkeme.gov.az/Public/Cases?page='+i,{
       timeout:2000
@@ -31,9 +33,19 @@ for(let i = 1; i <= 6101; i++) {
     let s = res.getBody()+"";
     //let indexb = s.indexOf('<table class="table table-stripped table-bordered table-condenced table-hover" id="Cases">')
     let indexb = 33634;
-    let indexe = s.indexOf('<td colspan="2">');
+    let indexe = s.indexOf('<div id="CasesPager" class="centered">');
     ans += s.substring(indexb, indexe) + i+"^^^^";
     console.log(indexe + "---------------------" +i+"-------");
+    if(i % 100 == 0) {
+      fs.appendFileSync("pages.txt", ans, function(err) {
+          if(err) {
+              return console.log(err);
+          }
+
+          console.log("The file was saved!");
+      });
+      ans = "";
+    }
   } catch (e) {
     i--;
   } finally {
@@ -41,11 +53,3 @@ for(let i = 1; i <= 6101; i++) {
   }
 
 }
-var fs = require('fs');
-fs.writeFile("pages.txt", ans, function(err) {
-    if(err) {
-        return console.log(err);
-    }
-
-    console.log("The file was saved!");
-});
