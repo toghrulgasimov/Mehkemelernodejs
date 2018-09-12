@@ -25,18 +25,20 @@ for(let i = 0; i < ar.length-2; i++) {
     let ortb = orti+35+8;
     let ii = t[j].indexOf( "</td>",ortb);
     let ort = t[j].substring(ortb,ii-13);
+    let db = t[j].indexOf('<td style="width:95px;text-align:center">');
+    let ds = t[j].substring(db+41,db+41+12);
     if(VALUES.has(value)) continue;
     try {
       var res = request('GET', 'https://e-mehkeme.gov.az/Public/CaseDetail?caseId='+value,{
         timeout:3000
       });
       let s = res.getBody()+"";
-      ans += s + "@@@@@@"+ort+"^^^^";
+      ans += s + "@@@@@@" +ort+"@@@@@@"+ds+"^^^^";
       cnt++;
       VALUES.add(value);
       console.log(cnt + " " + value);
       if(cnt % 100 == 0) {
-        fs.appendFileSync("data.txt", ans, function(err) {
+        fs.appendFileSync("data2.txt", ans, function(err) {
             if(err) {
                 return console.log(err);
             }
@@ -55,3 +57,10 @@ for(let i = 0; i < ar.length-2; i++) {
 
   }
 }
+fs.appendFileSync("data2.txt", ans, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+
+    console.log("The file was saved!");
+});
